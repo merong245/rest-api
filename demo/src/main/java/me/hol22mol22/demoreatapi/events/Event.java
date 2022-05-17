@@ -17,6 +17,7 @@ public class Event {
     private LocalDateTime beginEventDateTime;
     private LocalDateTime endEventDateTime;
 
+    // Optional
     private String location;
     private int basePrice;
     private int maxPrice;
