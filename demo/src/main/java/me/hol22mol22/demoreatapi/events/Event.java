@@ -2,12 +2,15 @@ package me.hol22mol22.demoreatapi.events;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of = "id")
+@Entity
 public class Event {
 
+    @Id @GeneratedValue
     private Integer id;
 
     private String name;
@@ -25,5 +28,6 @@ public class Event {
 
     private boolean offline;
     private boolean free;
+    @Enumerated(EnumType.STRING) // 기본값 ORDINAL -> 구조 바뀌면 전부 바뀜
     private EventStatus eventStatus;
 }
