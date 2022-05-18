@@ -3,6 +3,7 @@ package me.hol22mol22.demoreatapi.events;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,11 @@ public class EventController {
 
     private final EventRepository eventRepository;
 
+    private final ModelMapper modelMapper;
+
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody Event event){
+    public ResponseEntity createEvent(@RequestBody EventDto eventDto){
+        Event event = modelMapper.map(eventDto,Event.class);
         Event newEvent = this.eventRepository.save(event);
         URI createdUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
         return ResponseEntity.created(createdUri).body(event);
