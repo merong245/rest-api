@@ -30,4 +30,20 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING) // 기본값 ORDINAL -> 구조 바뀌면 전부 바뀜
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    public void update() {
+        // update Free
+        if (this.basePrice == 0 && this.maxPrice == 0){
+            this.free = true;
+        } else{
+            this.free = false;
+        }
+
+        // update offline
+        if (this.location == null || this.location.isBlank()){
+            this.offline = false;
+        } else{
+            this.offline = true;
+        }
+    }
 }
