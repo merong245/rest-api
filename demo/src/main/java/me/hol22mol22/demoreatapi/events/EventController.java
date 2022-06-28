@@ -53,6 +53,7 @@ public class EventController {
         // eventResource _links.self(EventResource)로 옮김 -> event를 사용할때마다 추가해주어야하기 때문에
 //        eventResource.add(selfLinkBuilder);
         eventResource.add(selfLinkBuilder.withRel("update-events"));
+        eventResource.add(Link.of("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createdUri).body(eventResource);
     }
 }
