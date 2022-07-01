@@ -3,12 +3,15 @@ package me.hol22mol22.demorestapi.events;
 import lombok.RequiredArgsConstructor;
 import me.hol22mol22.demorestapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.*;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +33,7 @@ public class EventController {
     private final EventValidator eventValidator;
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors){
+    public ResponseEntity<?> createEvent(@RequestBody @Valid EventDto eventDto, Errors errors){
         if(errors.hasErrors()){
             return badRequest(errors);
         }
@@ -54,7 +57,17 @@ public class EventController {
         return ResponseEntity.created(createdUri).body(eventResource);
     }
 
-    private ResponseEntity badRequest(Errors errors) {
+    @GetMapping
+    public ResponseEntity<?> queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler){
+        Page<Event> page =this.eventRepository.findAll(pageable);
+        // 각 건에 대한 url 은 없고 페이지에 대한 url만 존재 -> e-> new EventResource(e) 를 통해 추가
+        var pagedModel = assembler.toModel(page, EventResource::new);
+
+        pagedModel.add(Link.of("/docs/index.html#resources-events-list").withRel("profile"));
+        return ResponseEntity.ok(pagedModel);
+    }
+    private ResponseEntity<?> badRequest(Errors errors) {
         return ResponseEntity.badRequest().body(new ErrorsResource(errors));
     }
+
 }
