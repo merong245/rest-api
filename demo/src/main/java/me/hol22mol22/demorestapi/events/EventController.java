@@ -81,4 +81,36 @@ public class EventController {
         eventResource.add(Link.of("/docs/index.html#resources-events-get").withRel("profile"));
         return ResponseEntity.ok(eventResource);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEvent(@PathVariable Integer id,
+                                         @RequestBody @Valid EventDto eventDto,
+                                         Errors errors) {
+        Optional<Event> optionalEvent = this.eventRepository.findById(id);
+
+        // 존재하는 이벤트 인지 확인
+        if (optionalEvent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 이벤트에 적절한 값들이 들어 갔는지 확인
+        if(errors.hasErrors()){
+            return badRequest(errors);
+        }
+
+        // 이벤트 로직에 대한 검증
+        this.eventValidator.validate(eventDto, errors);
+        if (errors.hasErrors()){
+            return badRequest(errors);
+        }
+
+        // 정상적인 경우
+        Event event = optionalEvent.get();
+        this.modelMapper.map(eventDto,event);
+        Event savedEvent = this.eventRepository.save(event);
+
+        EventResource eventResource = new EventResource(savedEvent);
+        eventResource.add(Link.of("/docs/index.html#resources-events-update").withRel("profile"));
+        return ResponseEntity.ok(eventResource);
+    }
 }
