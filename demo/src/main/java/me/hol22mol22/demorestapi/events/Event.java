@@ -1,6 +1,7 @@
 package me.hol22mol22.demorestapi.events;
 
 import lombok.*;
+import me.hol22mol22.demorestapi.accounts.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,6 +31,9 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING) // 기본값 ORDINAL -> 구조 바뀌면 전부 바뀜
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    @ManyToOne // event에서만 owner를 참조
+    private Account manager;
 
     public void update() {
         // update Free
