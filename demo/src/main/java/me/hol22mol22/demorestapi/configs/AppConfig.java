@@ -27,24 +27,4 @@ public class AppConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    public ApplicationRunner applicationRunner(){
-        return new ApplicationRunner() {
-
-            @Autowired
-            AccountService accountService;
-
-            @Override
-            public void run(ApplicationArguments args) throws Exception {
-                Account junhyeok = Account.builder()
-                        .email("junhyeok@email.com")
-                        .password("junhyeok")
-                        .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
-                        .build();
-
-                accountService.saveAccount(junhyeok);
-
-            }
-        };
-    }
 }
