@@ -5,6 +5,7 @@ import me.hol22mol22.demorestapi.accounts.Account;
 import me.hol22mol22.demorestapi.accounts.AccountRepository;
 import me.hol22mol22.demorestapi.accounts.AccountRole;
 import me.hol22mol22.demorestapi.accounts.AccountService;
+import me.hol22mol22.demorestapi.common.AppProperties;
 import me.hol22mol22.demorestapi.common.BaseControllerTest;
 import me.hol22mol22.demorestapi.common.TestDescription;
 import org.junit.Before;
@@ -42,6 +43,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @Before
     public void setUp(){
@@ -366,23 +370,17 @@ public class EventControllerTests extends BaseControllerTest {
     }
     private String getAccessToken() throws Exception {
         // Given
-        String username = "junhyeok@email.com";
-        String password = "junhyeok";
-
         Account junhyeok = Account.builder()
-                .email(username)
-                .password(password)
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
                 .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                 .build();
         this.accountService.saveAccount(junhyeok);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
-                .param("username", username)
-                .param("password", password)
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                .param("username", appProperties.getUserUsername())
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 
         var responseBody = perform.andReturn().getResponse().getContentAsString();
