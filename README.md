@@ -1,4 +1,4 @@
-# rest-api
+# RESTful API
 study for rest-api
 
 로이 필딩이 인정하는 진정한 RESTful한 API를 구현해보자.
