@@ -1,7 +1,9 @@
 package me.hol22mol22.demorestapi.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import me.hol22mol22.demorestapi.accounts.Account;
+import me.hol22mol22.demorestapi.accounts.AccountSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,6 +35,7 @@ public class Event {
     private EventStatus eventStatus = EventStatus.DRAFT;
 
     @ManyToOne // event에서만 owner를 참조
+    @JsonSerialize(using = AccountSerializer.class)
     private Account manager;
 
     public void update() {
