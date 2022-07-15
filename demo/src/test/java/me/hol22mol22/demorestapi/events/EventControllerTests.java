@@ -5,10 +5,10 @@ import me.hol22mol22.demorestapi.accounts.AccountRepository;
 import me.hol22mol22.demorestapi.accounts.AccountRole;
 import me.hol22mol22.demorestapi.accounts.AccountService;
 import me.hol22mol22.demorestapi.common.AppProperties;
-import me.hol22mol22.demorestapi.common.BaseControllerTest;
-import me.hol22mol22.demorestapi.common.TestDescription;
-import org.junit.Before;
-import org.junit.Test;
+import me.hol22mol22.demorestapi.common.BaseTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-public class EventControllerTests extends BaseControllerTest {
+public class EventControllerTests extends BaseTest {
 
     @Autowired
     EventRepository eventRepository;
@@ -45,14 +45,14 @@ public class EventControllerTests extends BaseControllerTest {
     @Autowired
     AppProperties appProperties;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         this.eventRepository.deleteAll();
         this.accountRepository.deleteAll();
 
     }
     @Test
-    @TestDescription("정상적으로 이벤트를 생성하는 이벤트")
+    @DisplayName("정상적으로 이벤트를 생성하는 이벤트")
     public void createEvent() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
@@ -144,13 +144,13 @@ public class EventControllerTests extends BaseControllerTest {
         return "Bearer" + getAccessToken(true);
     }
 
-    private String getBearerToken(boolean neetToCreateAccoiunt) throws Exception {
-        return "Bearer" + getAccessToken(neetToCreateAccoiunt);
+    private String getBearerToken(boolean needToCreateAccount) throws Exception {
+        return "Bearer" + getAccessToken(needToCreateAccount);
     }
 
 
     @Test
-    @TestDescription("입력 받을 수 없는 값을 사용한 경우에는 BadRequest 발생 테스트")
+    @DisplayName("입력 받을 수 없는 값을 사용한 경우에는 BadRequest 발생 테스트")
     public void createEvent_BadRequest() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -180,7 +180,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력값이 비어있는 경우에 BadRequest 발생하는 테스트")
+    @DisplayName("입력값이 비어있는 경우에 BadRequest 발생하는 테스트")
     public void createEvent_BadRequest_Empty_Input() throws Exception {
         EventDto eventDto = EventDto.builder().build();
 
@@ -192,7 +192,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력값이 잘못된 경우에 BadRequest가 발생하는 테스트")
+    @DisplayName("입력값이 잘못된 경우에 BadRequest가 발생하는 테스트")
     public void createEvent_BadRequest_Wrong_Input() throws Exception {
         // 시작날짜보다 종료날짜가 빠름
         // basePrice가 maxPrice보다 높음
@@ -222,7 +222,7 @@ public class EventControllerTests extends BaseControllerTest {
         ;
     }
     @Test
-    @TestDescription("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    @DisplayName("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
     public void queryEvents() throws Exception{
         //Given
         // Event 30개 생성
@@ -244,7 +244,7 @@ public class EventControllerTests extends BaseControllerTest {
         ;
     }
     @Test
-    @TestDescription("인증된 사용자가 30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    @DisplayName("인증된 사용자가 30개의 이벤트를 10개씩 두번째 페이지 조회하기")
     public void queryEventsWithAuthentication() throws Exception{
         //Given
         // Event 30개 생성
@@ -269,7 +269,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("기존의 이벤트를 하나 조회하기")
+    @DisplayName("기존의 이벤트를 하나 조회하기")
     public void getEvent() throws Exception{
         //Given
         Account account = createAccount();
@@ -287,7 +287,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("없는 이벤트 조회시 404 응답받기")
+    @DisplayName("없는 이벤트 조회시 404 응답받기")
     public void getEvent404() throws Exception{
         //Given
         Event event = this.generateEvent(100);
@@ -299,7 +299,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("이벤트 정상 수정")
+    @DisplayName("이벤트 정상 수정")
     public void updateEvent() throws Exception{
         //Given
         Account account = createAccount();
@@ -322,7 +322,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력 값이 없는 경우 이벤트 수정 실패")
+    @DisplayName("입력 값이 없는 경우 이벤트 수정 실패")
     public void updateEvent400Empty() throws Exception{
         //Given
         Event event = this.generateEvent(200);
@@ -338,7 +338,7 @@ public class EventControllerTests extends BaseControllerTest {
         ;
     }
     @Test
-    @TestDescription("입력 값이 잘못된 경우 이벤트 수정 실패")
+    @DisplayName("입력 값이 잘못된 경우 이벤트 수정 실패")
     public void updateEvent400Wrong() throws Exception{
         //Given
         Event event = this.generateEvent(200);
@@ -358,7 +358,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("존재하지 않는 이벤트 수정시 이벤트 수정 실패")
+    @DisplayName("존재하지 않는 이벤트 수정시 이벤트 수정 실패")
     public void updateEvent404() throws Exception{
         //Given
         Event event = this.generateEvent(200);
